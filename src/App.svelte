@@ -8,11 +8,13 @@
   const handleKeyDown = (e) => {
     if (e.code !== "Space" || status === "inspect" || status === "inspect-done") return;
     if (status === "none") {
+      time = 0.0;
       tempTimeout = setTimeout(() => (status = "inspect-done"), 500);
       return (status = "inspect");
     }
     if (status === "solving") {
       clearInterval(tempInterval);
+      status = "none";
     }
   };
 
