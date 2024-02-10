@@ -28,7 +28,7 @@
         currAO12 = (times.slice(-12).reduce((acc, cur) => acc + cur, 0) / 12).toFixed(2);
         if (currAO12 < bestAO12 || !bestAO12) bestAO12 = currAO12;
       }
-      status = "none";
+      status = "finished-solving";
     }
   };
 
@@ -42,13 +42,14 @@
       clearTimeout(tempTimeout);
       return (status = "none");
     }
+    if (status == "finished-solving") status = "none";
   };
 </script>
 
 <main class="stat-{status} h-[100dvh] w-[100dvw] flex justify-center items-center">
   <h1 class="text-[6rem] font-mono">{time.toFixed(2)}</h1>
 
-  <table class="absolute bottom-0 left-0 text-xl m-4">
+  <table class="absolute bottom-0 left-0 text-xl font-mono m-4">
     <tr>
       <td />
       <td class="text-center px-2">Current</td>
@@ -71,6 +72,9 @@
 
 <style>
   .stat-none {
+    background-color: #eee;
+  }
+  .stat-finished-solving {
     background-color: #eee;
   }
 
