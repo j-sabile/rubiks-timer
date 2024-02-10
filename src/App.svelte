@@ -10,8 +10,7 @@
   let bestAO5;
   let bestAO12;
 
-  const handleKeyDown = (e) => {
-    if (e.code !== "Space" || status === "inspect" || status === "inspect-done") return;
+  const handleTriggerStart = () => {
     if (status === "none") {
       time = 0.0;
       tempTimeout = setTimeout(() => (status = "inspect-done"), 500);
@@ -32,8 +31,7 @@
     }
   };
 
-  const handleKeyUp = (e) => {
-    if (e.code !== "Space") return;
+  const handleTriggerEnd = () => {
     if (status === "inspect-done") {
       status = "solving";
       return (tempInterval = setInterval(() => (time += 0.01), 10));
@@ -47,7 +45,7 @@
 </script>
 
 <main class="stat-{status} h-[100dvh] w-[100dvw] flex justify-center items-center">
-  <h1 class="text-[6rem] font-mono">{time.toFixed(2)}</h1>
+  <h1 class="text-[6rem] font-mono select-none">{time.toFixed(2)}</h1>
 
   <table class="absolute bottom-0 left-0 text-xl font-mono m-4">
     <tr>
@@ -68,7 +66,12 @@
   </table>
 </main>
 
-<svelte:window on:keydown={handleKeyDown} on:keyup={handleKeyUp} />
+<svelte:window
+  on:keydown={(e) => e.code === "Space" && handleTriggerStart()}
+  on:keyup={(e) => e.code === "Space" && handleTriggerEnd()}
+  on:touchstart={handleTriggerStart}
+  on:touchend={handleTriggerEnd}
+/>
 
 <style>
   .stat-none {
