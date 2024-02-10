@@ -2,21 +2,21 @@
   import "./app.css";
   let time = 0.0;
   let status = "none";
-  let tempTimeout;
-  let tempInterval;
   let times = [];
-  let currAO5;
-  let currAO12;
-  let bestAO5;
-  let bestAO12;
+  let tempTimeout, tempInterval, currAO5, currAO12, bestAO5, bestAO12;
+
+  const NONE = "none";
+  const INSPECT = "inspect";
+  const INSPECT_DONE = "inspect-done";
+  const SOLVING = "solving";
+  const FINISHED_SOLVING = "finished-solving";
 
   const handleTriggerStart = () => {
-    if (status === "none") {
+    if (status === NONE) {
       time = 0.0;
-      tempTimeout = setTimeout(() => (status = "inspect-done"), 500);
-      return (status = "inspect");
-    }
-    if (status === "solving") {
+      tempTimeout = setTimeout(() => (status = INSPECT_DONE), 500);
+      status = INSPECT;
+    } else if (status === SOLVING) {
       clearInterval(tempInterval);
       times = [...times, Number(time.toFixed(2))];
       if (times.length >= 5) {
@@ -27,20 +27,18 @@
         currAO12 = (times.slice(-12).reduce((acc, cur) => acc + cur, 0) / 12).toFixed(2);
         if (currAO12 < bestAO12 || !bestAO12) bestAO12 = currAO12;
       }
-      status = "finished-solving";
+      status = FINISHED_SOLVING;
     }
   };
 
   const handleTriggerEnd = () => {
-    if (status === "inspect-done") {
-      status = "solving";
-      return (tempInterval = setInterval(() => (time += 0.01), 10));
-    }
-    if (status === "inspect") {
+    if (status === INSPECT) {
       clearTimeout(tempTimeout);
-      return (status = "none");
-    }
-    if (status == "finished-solving") status = "none";
+      status = NONE;
+    } else if (status === INSPECT_DONE) {
+      status = SOLVING;
+      tempInterval = setInterval(() => (time += 0.01), 10);
+    } else if (status == FINISHED_SOLVING) status = NONE;
   };
 </script>
 
@@ -88,7 +86,6 @@
   .stat-inspect-done {
     background-color: #93c47d;
   }
-
   .stat-solving {
     background-color: #93c47d;
   }
