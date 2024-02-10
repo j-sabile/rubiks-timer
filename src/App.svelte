@@ -1,5 +1,7 @@
 <script>
+  import { scale } from "svelte/transition";
   import "./app.css";
+  import generateScramble from "./lib/scrambler.js";
   let time = 0.0;
   let status = "none";
   let times = [];
@@ -10,6 +12,8 @@
   const INSPECT_DONE = "inspect-done";
   const SOLVING = "solving";
   const FINISHED_SOLVING = "finished-solving";
+
+  let scramble = generateScramble();
 
   const handleTriggerStart = () => {
     if (status === NONE) {
@@ -28,6 +32,7 @@
         if (currAO12 < bestAO12 || !bestAO12) bestAO12 = currAO12;
       }
       status = FINISHED_SOLVING;
+      scramble = generateScramble();
     }
   };
 
@@ -42,10 +47,14 @@
   };
 </script>
 
-<main class="stat-{status} h-[100dvh] w-[100dvw] flex justify-center items-center">
-  <h1 class="text-[6rem] font-mono select-none">{time.toFixed(2)}</h1>
+<main class="stat-{status} flex justify-center items-center select-none font-mono h-[100dvh] w-[100dvw]">
+  <h1 class="text-[6rem]">{time.toFixed(2)}</h1>
 
-  <table class="absolute bottom-0 left-0 text-xl font-mono m-4">
+  <h4 class="absolute top-0 my-2 mx-6 text-2xl text-center">
+    {status === SOLVING ? "" : scramble}
+  </h4>
+
+  <table class="absolute bottom-0 left-0 text-xl m-4 {status === SOLVING ? 'hidden' : ''}">
     <tr>
       <td />
       <td class="text-center px-2">Current</td>
